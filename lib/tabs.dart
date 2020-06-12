@@ -1,7 +1,10 @@
 import 'package:FlutterStudy/pages/chat/chat.dart';
 import 'package:FlutterStudy/pages/chat/parts/chat-vioce-call/chat-voice.dart';
+import 'package:FlutterStudy/utils/DioRequest.dart';
+import 'package:FlutterStudy/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:FlutterStudy/pages/drawer/drawer.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:FlutterStudy/pages/message/message.dart';
 import 'package:FlutterStudy/pages/contact/contact.dart';
 import 'package:FlutterStudy/pages/moments/moments.dart';
@@ -14,8 +17,30 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
   // 控制顶AppBar的title
   String title="消息";
+  String avatarUrl="";
   // 控制底部导航
   int index=0;
+  @override
+  void initState() { 
+    super.initState();
+    getAvatarUrl();
+  }
+  getAvatarUrl()async{
+    try {
+        request.get('/info',queryParameters: {"account":await getStorage("account")}).then((value)async=>{
+        // await getExternalStorageDirectory().then((path) =>{
+        //   print(path),
+        //   // request.download(value.data["avatarUrl"], path)
+        // }),
+        setState((){
+          avatarUrl=value.data["avatarUrl"];
+        })
+      });
+    } catch (e) {
+
+    }
+    
+  }
   closeCall(){
     setState(() {
       ChatPage.isCalling=false;
@@ -24,12 +49,13 @@ class _TabsState extends State<Tabs> {
   }
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title:Text("$title"),
         centerTitle: true,
         // AppBar中的头像
-        leading: Leading(),
+        leading: Leading(avatarUrl),
         actions: <Widget>[
           // 弹出菜单按钮 Offset>100 会出现在AppBar下
           PopupMenuButton(
@@ -101,12 +127,14 @@ class _TabsState extends State<Tabs> {
 }
 
 class Leading extends StatelessWidget {
+  String avatarUrl;
+  Leading(this.avatarUrl);
   // AppBar头像按钮 点击打开抽屉
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return IconButton(
         icon:CircleAvatar(
-          backgroundImage: NetworkImage("https://c-ssl.duitang.com/uploads/item/201803/19/20180319132911_UxCLe.jpeg"),
+          backgroundImage:avatarUrl.length!=0?NetworkImage(avatarUrl):null,
         ), 
         onPressed:(){
           Scaffold.of(context).openDrawer();

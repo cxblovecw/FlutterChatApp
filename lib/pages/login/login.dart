@@ -148,6 +148,7 @@ class _LoginPageState extends State<LoginPage> with AutomaticKeepAliveClientMixi
                 "account":account,
                 "password":password
               }).then((value) =>{
+                print(value.data),
                 if(value.data=='noAccount'){
                   showDialog(context: context,builder: (context){
                     return MyDialog("登录失败","账号不存在");

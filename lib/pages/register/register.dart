@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String password="";
   String userName="";
   bool passwordVisible=false;
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -207,8 +208,16 @@ class _RegisterPageState extends State<RegisterPage> {
             child: IconButton(icon: Icon(Icons.arrow_forward,color: Colors.white), onPressed: (phone.length!=0&&password.length!=0)?(){
               if(RegExp(r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$').hasMatch(phone)){
                   if(RegExp(r"[0-9]").hasMatch(password)&&RegExp(r"[A-Za-z]").hasMatch(password)&&password.length<=16&&password.length>=8){
+                    if(userName.length==0){
+                      showDialog(context: context,builder: (context){
+                      return MyDialog("注册失败","用户名不得为空");
+                    });
+                    return;
+                    }                    
                     request.get('/register',queryParameters: {
-                      "phone":phone
+                      "phone":phone,
+                      "password":password,
+                      "userName":userName
                     }).then((value) =>{
                       if(value.data=='registered'){
                         showDialog(context: context,builder: (context){
@@ -219,6 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         showDialog(context: context,builder: (context){
                         return  MyDialog("注册成功","即将跳转页面",callback:(){
                           setStorage("account", value.data);
+                          print(value.data);
                           Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
                             return Tabs();
                           }));
@@ -227,7 +237,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     });
                   }else{
-                    print("注册失败 密码不合法");
                     showDialog(context: context,builder: (context){
                       return MyDialog("注册失败","密码不合法");
                     }).whenComplete(() =>setState(() {
@@ -242,16 +251,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   })});
                   print("注册失败 手机号码不合法");
               }
-             
-              // if(password.length<8){
-              //   print("密码长度不足");
-              // }else if(RegExp(r"^(?![A-Z]+$)(?![a-z]+$)(?!\d+$)(?![\W_]+$)\S{6,16}$").allMatches(password) != null){
-              //   print("密码需包含数字和字母");
-              // }
-
-              // Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder:(context){
-              //   return Tabs();
-              // }),(route)=>route==null);
             }:null),
           ),
        ],

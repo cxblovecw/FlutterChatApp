@@ -1,9 +1,13 @@
 part of 'package:FlutterStudy/pages/drawer/drawer.dart';
 
 class MyDrawerHeader extends StatelessWidget {
+  Map userInfo;
+  MyDrawerHeader(this.userInfo);
   //  抽屉头部
   @override
   Widget build(BuildContext context) {
+    var loaded=userInfo!=null;
+    var signatureLength=loaded?userInfo["signature"].length:0;
     return Container(
               padding: EdgeInsets.only(left:20),
               width: double.infinity,
@@ -15,17 +19,21 @@ class MyDrawerHeader extends StatelessWidget {
                 mainAxisSize:MainAxisSize.max,
                 children:[
                   Expanded(
-                    child:Container(
+                    child:GestureDetector(onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                              return EditInfo();
+                            }));
+                          }, child:Container(
                       padding: EdgeInsets.only(top:15,right: 15),
                       child: Container(
                         width: 60.0,
                         height:80.0,
                         decoration:BoxDecoration(
                           borderRadius:BorderRadius.circular(40.0),
-                          image: DecorationImage(image: NetworkImage("https://c-ssl.duitang.com/uploads/item/201803/19/20180319132911_UxCLe.jpeg"),fit:BoxFit.cover)
+                          image: loaded?DecorationImage(image:NetworkImage(userInfo["avatarUrl"]),fit:BoxFit.cover):null
                         ),
                       )
-                    ),flex: 6,),
+                    )),flex: 6,),
                   Expanded(child:Container(
                     height: 80.0,
                     child: Container(
@@ -33,8 +41,16 @@ class MyDrawerHeader extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children:[
-                          Text("我的名称",style: TextStyle(height: 2,fontWeight: FontWeight.w600,color: Colors.white),),
-                          Text("个性签名............",maxLines: 1,overflow:TextOverflow.ellipsis,style: TextStyle(height: 2,fontWeight: FontWeight.w600,color: Colors.white))
+                          GestureDetector(onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                              return EditInfo();
+                            }));
+                          }, child: Text(loaded?userInfo["userName"]:"",style: TextStyle(height: 2,fontWeight: FontWeight.w600,color: Colors.white),),),
+                          GestureDetector(onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                              return EditSignature();
+                            }));
+                          }, child:Text((loaded&&signatureLength>0)?userInfo["signature"][signatureLength-1]['text']:"编辑个签，展示自我 ! !",maxLines: 1,overflow:TextOverflow.ellipsis,style: TextStyle(height: 2,fontWeight: FontWeight.w600,color: Colors.white)))
                         ]
                       ),
                     ),
