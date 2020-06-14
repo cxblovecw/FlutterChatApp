@@ -8,6 +8,8 @@ class MyDrawerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     var loaded=userInfo!=null;
     var signatureLength=loaded?userInfo["signature"].length:0;
+    var signature=(loaded&&signatureLength>0)?userInfo["signature"][signatureLength-1]['text']:"";
+    setStorage("signature",signature);
     return Container(
               padding: EdgeInsets.only(left:20),
               width: double.infinity,
@@ -21,7 +23,7 @@ class MyDrawerHeader extends StatelessWidget {
                   Expanded(
                     child:GestureDetector(onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                              return EditInfo();
+                              return Info(account:"10000",);
                             }));
                           }, child:Container(
                       padding: EdgeInsets.only(top:15,right: 15),
@@ -43,7 +45,7 @@ class MyDrawerHeader extends StatelessWidget {
                         children:[
                           GestureDetector(onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                              return EditInfo();
+                              return Info(account: userInfo['account'].toString(),);
                             }));
                           }, child: Text(loaded?userInfo["userName"]:"",style: TextStyle(height: 2,fontWeight: FontWeight.w600,color: Colors.white),),),
                           GestureDetector(onTap: (){
@@ -59,7 +61,9 @@ class MyDrawerHeader extends StatelessWidget {
                     child: Container(
                       padding:EdgeInsets.only(top:20,right: 5),
                       child:IconButton(icon: Icon(Icons.wallpaper,color: Colors.white,), onPressed: (){
-                        print("我的二维码");
+                        Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+                          return MyQrCode();
+                        }));
                       })
                     ),
                   ),flex: 3,),

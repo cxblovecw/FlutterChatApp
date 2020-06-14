@@ -12,23 +12,25 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  bool logined = false;
+  bool logined;
   @override
   void initState() { 
     super.initState();
-      getStorage("account").then((value)=>{
-      print(value),
+      
+  }
+  isLoaded()async{
+     await getStorage("account").then((value)=>{
       setState((){
-      logined=value!=null;
+        logined=value!=null;
       }),
-      print(logined)
     });
   }
   @override
   Widget build(BuildContext context) {
+    isLoaded();
     return MaterialApp(
       title: "ChatApp",
-      home: logined?Tabs():LoginPage(),
+      home: logined!=null?(logined?Tabs():LoginPage()):Scaffold(),
     );
   }
 }

@@ -17,29 +17,25 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
   // 控制顶AppBar的title
   String title="消息";
-  String avatarUrl="";
+  dynamic userInfo;
   // 控制底部导航
   int index=0;
   @override
   void initState() { 
     super.initState();
-    getAvatarUrl();
+    setAvatarUrl();
   }
-  getAvatarUrl()async{
-    try {
-        request.get('/info',queryParameters: {"account":await getStorage("account")}).then((value)async=>{
-        // await getExternalStorageDirectory().then((path) =>{
-        //   print(path),
-        //   // request.download(value.data["avatarUrl"], path)
-        // }),
-        setState((){
-          avatarUrl=value.data["avatarUrl"];
-        })
-      });
-    } catch (e) {
-
-    }
-    
+  setAvatarUrl()async{
+    userInfo=await getUserInfo((await getStorage("account")).toString());
+    print(userInfo);
+    setStorage("userInfo",'${userInfo.toString()}');
+    // setStorage("age",userInfo.data["age"]);
+    // setStorage("sex", userInfo.data["sex"]);
+    // setStorage("qrCodeUrl", userInfo.data['qrCodeUrl']);
+    // setStorage("avatarUrl", userInfo.data["avatarUrl"]);
+    // setState((){
+    //   avatarUrl=userInfo.data["avatarUrl"];
+    // });
   }
   closeCall(){
     setState(() {
@@ -49,13 +45,12 @@ class _TabsState extends State<Tabs> {
   }
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title:Text("$title"),
         centerTitle: true,
         // AppBar中的头像
-        leading: Leading(avatarUrl),
+        leading: Leading(userInfo!=null?userInfo.data:{}),
         actions: <Widget>[
           // 弹出菜单按钮 Offset>100 会出现在AppBar下
           PopupMenuButton(
@@ -127,14 +122,14 @@ class _TabsState extends State<Tabs> {
 }
 
 class Leading extends StatelessWidget {
-  String avatarUrl;
-  Leading(this.avatarUrl);
+  dynamic userInfo;
+  Leading(this.userInfo);
   // AppBar头像按钮 点击打开抽屉
   @override
   Widget build(BuildContext context){
     return IconButton(
         icon:CircleAvatar(
-          backgroundImage:avatarUrl.length!=0?NetworkImage(avatarUrl):null,
+          backgroundImage:userInfo['avatarUrl']!=null?NetworkImage(userInfo['avatarUrl']):null,
         ), 
         onPressed:(){
           Scaffold.of(context).openDrawer();

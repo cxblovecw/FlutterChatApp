@@ -227,8 +227,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         print(value.data.runtimeType),
                         showDialog(context: context,builder: (context){
                         return  MyDialog("注册成功","即将跳转页面",callback:(){
-                          setStorage("account", value.data);
-                          print(value.data);
+                          setStorage("account", value.data.toString());
                           Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
                             return Tabs();
                           }));

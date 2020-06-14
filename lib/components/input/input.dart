@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 class Input extends StatefulWidget {
-  String text;            // 绑定外部的数据 
+  String text="";            // 绑定外部的数据 
   String hintText;        // 提示文本
   IconData defaultIcon;   // 默认的图标
   Function setText;      // 回调函数 因为子widget无法操作外部的数据 所以从父widget传入回调函数进行操作
@@ -50,7 +50,8 @@ class _InputState extends State<Input>{
                 TextEditingValue(
                   text:widget.text,
                   selection: new TextSelection.fromPosition(TextPosition(
-                    affinity: TextAffinity.downstream,offset: widget.text.length)))
+                    affinity: TextAffinity.upstream,offset: widget.text.length))
+                    )
               ),
               obscureText: (!passwordVisible&&widget.isPassword),
               textAlign: TextAlign.center,
@@ -72,12 +73,12 @@ class _InputState extends State<Input>{
                 border: InputBorder.none,
             ),
             onChanged: (value){
-              widget.setText(value);
+              print(value);
+              setState(() {
+                widget.setText(value);
+              });
             },
           ),
         );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

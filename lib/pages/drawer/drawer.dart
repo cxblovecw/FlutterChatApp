@@ -1,7 +1,8 @@
 import 'package:FlutterStudy/components/dialog/dialog.dart';
-import 'package:FlutterStudy/pages/editInfo/editInfo.dart';
+import 'package:FlutterStudy/pages/info/info.dart';
 import 'package:FlutterStudy/pages/editSignature/editSignature.dart';
 import 'package:FlutterStudy/pages/login/login.dart';
+import 'package:FlutterStudy/pages/qrCode/qrCode.dart';
 import 'package:FlutterStudy/utils/DioRequest.dart';
 import 'package:FlutterStudy/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +28,6 @@ class _MyDrawerState extends State<MyDrawer> {
     request.get('/info',queryParameters: {"account":await getStorage("account")}).then((value)async=>{
       setState((){
         userInfo=value.data;
-        print(userInfo);
       })
     });
   }

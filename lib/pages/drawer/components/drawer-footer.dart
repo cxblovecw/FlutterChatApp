@@ -13,6 +13,8 @@ class MyDrawerFooter extends StatelessWidget {
             showDialog(context: context,builder:(context){
               return  MyDialog("退出","是否退出当前账号?",hasCancel: true,callback: (){
                 removeStorage("account");
+                removeStorage("userInfo");
+                removeStorage("signature");
                 Navigator.pushReplacement(context,CupertinoPageRoute(builder: (BuildContext context){
                 return LoginPage();
             }));

@@ -168,6 +168,7 @@ class _LoginPageState extends State<LoginPage> with AutomaticKeepAliveClientMixi
                         return MyDialog("登录失败","服务器错误,请检查网络");
                       })
                     }else if(value.data=="validation"){
+                      print(account.runtimeType),
                       setStorage("account",account),
                       Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder:(context){
                         return Tabs();

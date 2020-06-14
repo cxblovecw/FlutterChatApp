@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 // class Storage{
 //   SharedPreferences spfs;
@@ -66,7 +68,11 @@ setStorage(key,value)async{
 }
 getStorage(String key)async{
   SharedPreferences spfs=await SharedPreferences.getInstance();
-  return spfs.get(key);
+  if(spfs.get(key).startsWith("{")){
+    return JsonDecoder().convert(spfs.get(key));
+  }else{
+    return spfs.get(key);
+  }
 }
 
 removeStorage(String key) async{
