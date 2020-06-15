@@ -45,11 +45,11 @@ class _ChatBarState extends State<ChatBar> {
             // 输入框的外部包装
             Expanded(
               child: Container(
-                margin: EdgeInsets.only(left: 20,right: 10.0,top: 10,bottom: 0),
-                padding: EdgeInsets.only(left: 25,right: 20.0,top: 0,bottom: 0),
+                margin: EdgeInsets.only(left: 15,right: 10.0,top: 10,bottom: 0),
+                padding: EdgeInsets.only(left: 15,right: 15.0,top: 0,bottom: 0),
                 decoration: BoxDecoration(
                   color:Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20))
+                  borderRadius: BorderRadius.all(Radius.circular(50))
                 ),
                 // 输入框
                 child:TextField(
@@ -57,7 +57,9 @@ class _ChatBarState extends State<ChatBar> {
                   minLines: 1,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    border:InputBorder.none,),
+                    border:InputBorder.none,
+                    contentPadding: EdgeInsets.all(5)   
+                    ),
                     // 点击输入框时 底部的功能内容隐藏
                     onTap: (){
                       setState(() {

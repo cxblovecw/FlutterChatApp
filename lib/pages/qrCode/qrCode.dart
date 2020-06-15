@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:FlutterStudy/utils/storage.dart';
 import 'package:flutter/material.dart';
 
@@ -40,16 +42,18 @@ class _MyQrCodeState extends State<MyQrCode> {
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)
+                          borderRadius: BorderRadius.circular(10),
+                          image: userInfo!=null?DecorationImage(image:NetworkImage(userInfo['avatarUrl'])):null
                         ),
-                        child: userInfo!=null?Image(image:NetworkImage(userInfo['avatarUrl'])):null, 
+                        // child: userInfo!=null?Image(image:NetworkImage(userInfo['avatarUrl'])):null, 
                       //  child: Image(image:NetworkImage("http://192.168.1.12:4200/project/images/avatars/avatar14.jpg")),  
                       ),
+                      Container(width: 10,),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: userInfo!=null?[
                           Text(userInfo['userName'],style: TextStyle(fontSize: 18),),
-                          Container(height:15),
+                          Container(height:10),
                           Text("性别:"+userInfo['sex']+"   年龄:"+userInfo['age'].toString(),style: TextStyle(fontSize: 14,color:Colors.black38),)
                         ]:[],
                       )

@@ -1,9 +1,15 @@
 import 'package:FlutterStudy/pages/chat/chat.dart';
 import 'package:FlutterStudy/pages/chat/parts/chat-vioce-call/chat-voice.dart';
+import 'package:FlutterStudy/pages/friend/searchFriend/searchFriend.dart';
 import 'package:FlutterStudy/utils/DioRequest.dart';
+import 'package:FlutterStudy/pages/info/info.dart';
 import 'package:FlutterStudy/utils/storage.dart';
+import "package:barcode_scan/barcode_scan.dart";
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:FlutterStudy/pages/drawer/drawer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:FlutterStudy/pages/message/message.dart';
 import 'package:FlutterStudy/pages/contact/contact.dart';
@@ -20,13 +26,15 @@ class _TabsState extends State<Tabs> {
   dynamic userInfo;
   // 控制底部导航
   int index=0;
+  DateTime lastPopTime;
   @override
   void initState() { 
     super.initState();
-    setAvatarUrl();
+    initStateSync();
   }
-  setAvatarUrl()async{
+  initStateSync()async{
     userInfo=await getUserInfo((await getStorage("account")).toString());
+    lastPopTime=null;
     print(userInfo);
     setStorage("userInfo",'${userInfo.toString()}');
     // setStorage("age",userInfo.data["age"]);
@@ -43,9 +51,10 @@ class _TabsState extends State<Tabs> {
       ChatPage.type=null;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
       appBar: AppBar(
         title:Text("$title"),
         centerTitle: true,
@@ -54,16 +63,49 @@ class _TabsState extends State<Tabs> {
         actions: <Widget>[
           // 弹出菜单按钮 Offset>100 会出现在AppBar下
           PopupMenuButton(
+            padding: EdgeInsets.all(0),
             offset: Offset(180,120),
             icon: Icon(Icons.add),
             shape: RoundedRectangleBorder(),
+            onSelected: (value)async{
+              if(value==1){
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                  return SearchFriend();
+                }));
+              }
+              if(value==2){
+                var result=await BarcodeScanner.scan(options:ScanOptions(
+                  strings: {"cancel":"取消","flash_on":"打开手电","flash_off":"关闭手电"},
+                  autoEnableFlash: false,
+                  android: AndroidOptions(
+                  )
+                ));
+                var account=JsonDecoder().convert(result.rawContent)['account'].toString();
+                Navigator.pushReplacement(context,MaterialPageRoute(
+                  builder: (context) {
+                    return Info(account:account);
+                  },
+                ));
+              }
+            },
+            onCanceled: (){
+              print("取消");
+            },
             itemBuilder: (BuildContext context){
               // 弹出菜单
-              return <PopupMenuItem>[
-                PopupMenuItem(child: Text("加好友/群")),  
-                PopupMenuItem(child: Text("加好友/群")),
-                PopupMenuItem(child: Text("加好友/群")),
-                PopupMenuItem(child: Text("加好友/群")),
+              return [
+                PopupMenuItem(
+                  value: 1,
+                  child: Row(children: <Widget>[
+                 Icon(Icons.person,color: Colors.grey,),Container(width: 10,), Text("加好友/群")
+                ],)),
+                PopupMenuItem(
+                  value: 2,
+                  child:Row(
+                    children: <Widget>[
+                  Icon(Icons.crop_free,color: Colors.grey,),Container(width: 10,),Text("扫一扫"),
+                ]),
+                )
             ];
           })
         ],
@@ -117,7 +159,18 @@ class _TabsState extends State<Tabs> {
         },
         currentIndex: index
         ),
-    );
+    ), onWillPop: ()async{
+      print(lastPopTime);
+      print(DateTime.now());
+       if(lastPopTime!=null&&DateTime.now().difference(lastPopTime)<Duration(milliseconds: 1500)){
+         SystemNavigator.pop();
+       }else{
+         Fluttertoast.showToast(msg: "再按一次退出程序");
+       }
+       setState(() {
+           lastPopTime=DateTime.now();
+         });
+    });
   }
 }
 

@@ -94,7 +94,7 @@ class _InfoState extends State<Info> {
       child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("编辑资料"),
+        title: Text("个人信息"),
         leading: IconButton(icon: Icon(Icons.chevron_left), onPressed: (){
           Navigator.push(context,MaterialPageRoute(builder: (contedt){
             return Tabs();
@@ -103,7 +103,7 @@ class _InfoState extends State<Info> {
       ),
       body:Container(
         color: Color.fromRGBO(180,180,180,0.05),
-        child: Column(
+        child: ListView(
         children: <Widget>[
           Container(
             width:width,
